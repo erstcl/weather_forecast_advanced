@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Маршрут путешествия</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .weather-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+
+        .weather-info {
+            margin-top: 20px;
+        }
+
+        .weather-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: small;
+            color: #6c757d;
+        }
+
+        .city-input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .city-input-group input {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .city-input-group button {
+            margin-right: 5px;
+        }
+    </style>
+
+    <script>
+        function addIntermediateCity() {
+            const intermediateCitiesDiv = document.getElementById("intermediate-cities");
+            const newCityInputGroup = document.createElement("div");
+            newCityInputGroup.classList.add("city-input-group");
+
+            const newCityInput = document.createElement("input");
+            newCityInput.type = "text";
+            newCityInput.name = "intermediate_city";
+            newCityInput.placeholder = "Промежуточный город";
+
+            const moveUpButton = document.createElement("button");
+            moveUpButton.innerHTML = "↑";
+            moveUpButton.onclick = (event) => {
+                event.preventDefault();
+                moveCityUp(newCityInputGroup);
+            };
+
+            const moveDownButton = document.createElement("button");
+            moveDownButton.innerHTML = "↓";
+            moveDownButton.onclick = (event) => {
+                event.preventDefault();
+                moveCityDown(newCityInputGroup);
+            };
+
+            const deleteButton = document.createElement("button");
+            deleteButton.innerHTML = "×";
+            deleteButton.onclick = (event) => {
+                event.preventDefault();
+                deleteCity(newCityInputGroup);
+            };
+
+            newCityInputGroup.appendChild(newCityInput);
+            newCityInputGroup.appendChild(moveUpButton);
+            newCityInputGroup.appendChild(moveDownButton);
+            newCityInputGroup.appendChild(deleteButton);
+
+            intermediateCitiesDiv.appendChild(newCityInputGroup);
+        }
+
+        function moveCityUp(cityInputGroup) {
+            const parent = cityInputGroup.parentNode;
+            const previousSibling = cityInputGroup.previousElementSibling;
+            if (previousSibling && previousSibling.tagName !== 'LABEL' && previousSibling.tagName !== 'BUTTON') {
+                parent.insertBefore(cityInputGroup, previousSibling);
+            }
+        }
+
+        function moveCityDown(cityInputGroup) {
+            const parent = cityInputGroup.parentNode;
+            const nextSibling = cityInputGroup.nextElementSibling;
+            if (nextSibling) {
+                parent.insertBefore(nextSibling, cityInputGroup);
+            }
+        }
+
+        function deleteCity(cityInputGroup) {
+            cityInputGroup.parentNode.removeChild(cityInputGroup);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Введите маршрут путешествия</h1>
+        <form method="POST" class="weather-form">
+            <div class="input-group">
+                <label for="start_point">Начальная точка:</label>
+                <input type="text" id="start_point" name="start_point" required />
+            </div>
+
+            <div id="intermediate-cities">
+                <label>Промежуточные точки:</label>
+                <button type="button" class="add-city-btn" onclick="addIntermediateCity()">
+                    Добавить промежуточную точку
+                </button>
+            </div>
+
+            <div class="input-group">
+                <label for="end_point">Конечная точка:</label>
+                <input type="text" id="end_point" name="end_point" required />
+            </div>
+
+            <button type="submit">Построить маршрут</button>
+        </form>
+    </div>
+</body>
+</html>
